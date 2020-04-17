@@ -1,0 +1,29 @@
+{
+  "name": "example-rabbitmq",
+  "version": "1.0.0",
+  "description": "Microservices with RabbitMQ",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon --exec npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crfloresc/example-rabbitmq.git"
+  },
+  "author": "ITSON",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/crfloresc/example-rabbitmq/issues"
+  },
+  "homepage": "https://github.com/crfloresc/example-rabbitmq#readme",
+  "devDependencies": {
+    "chalk": "^4.0.0",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.3"
+  }
+}
