@@ -1,4 +1,4 @@
-const Product = require('../models/Product');
+const Product = require('../models/product.model');
 const { info, error } = require('../helpers/Logger');
 
 // TODO: implement validation, auth req
