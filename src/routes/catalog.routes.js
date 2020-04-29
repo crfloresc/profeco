@@ -1,10 +1,15 @@
 const { Router } = require('express');
+const { info, error } = require('../helpers/Logger');
 const router = Router();
 
 /* GET ALL async? */
 router.get('/catalog', (req, res) => {
-  res.json('GET ALL: catalog')
-    .status(200);
+  try {
+    res.json('GET ALL: catalog')
+      .status(200);
+  } catch (err) {
+    error(err);
+  }
 });
 
 /* GET async? */

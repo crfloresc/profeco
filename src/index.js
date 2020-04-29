@@ -1,18 +1,23 @@
+const cors = require('cors');
 const express = require('express');
-const { info, error } = require('./helpers/Logger');
 const morgan = require('morgan');
-const app = express();
+
+const { info, error } = require('./helpers/Logger');
 
 // Settings
-app.set('port', process.env.SERVER_PORT || 8080);
+const app = express();
+app.set('port', process.env.SERVER_PORT || 3002);
 
 // Middlewares
-app.use(morgan('dev'));
 app.use(express.json(/*{ limit: '300kb' }*/));
 app.use(express.urlencoded({ extended: false }));
+app.use(morgan('dev'));
+app.use(cors());
 
 // Routes
-app.use('api/v1', require('./routes/catalog.routes'));
+// - Prevent GET /favicon.ico
+app.get('/favicon.ico', (req, res) => res.status(204));
+app.use('/api/v1', require('./routes/catalog.routes'));
 
 // Run
 app.listen(app.get('port'), () => {

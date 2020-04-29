@@ -16,6 +16,9 @@ const info = (...msg) => {
 };
 
 const error = (...msg) => {
+  console.error(
+    chalk.red(msg)
+  );
 };
 
 module.exports = {
