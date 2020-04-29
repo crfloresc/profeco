@@ -1,7 +1,21 @@
 const mongoose = require('../data/database');
 
-// Schema for product
+/**
+ * Schema for product:
+ * - barcode: NA
+ * - name: NA
+ * - description: NA
+ * - img: NA
+ * - stock: NA
+ * - supplier: NA
+ * - available: NA
+ */
 const productSchema = new mongoose.Schema({
+  barcode: {
+    type: String,
+    maxlength: 25,
+    required: true
+  },
   name: {
     type: String,
     maxlength: 100,
@@ -21,10 +35,9 @@ const productSchema = new mongoose.Schema({
     max: 100000,
     required: true
   },
-  company: {
+  supplier: {
     type: String,
-    maxlength: 100,
-    required: true
+    maxlength: 100
   },
   available: {
     type: Boolean,

@@ -45,7 +45,7 @@ const createProduct = async (req, res, next) => {
       description: req.body.description,
       img: req.body.img,
       stock: req.body.stock,
-      company: req.body.company,
+      supplier: req.body.supplier,
       available: req.body.available
     });
 
