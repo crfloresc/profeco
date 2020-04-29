@@ -10,6 +10,11 @@
     "start": "node src/index.js",
     "dev": "nodemon --exec npm start"
   },
+  "keywords": [
+    "api",
+    "restful",
+    "json"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/crfloresc/example-rabbitmq.git"
