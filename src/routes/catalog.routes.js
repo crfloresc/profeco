@@ -6,7 +6,7 @@ router.route('/catalogo/producto')
   .get(ProductController.findAllProducts) /* GET ALL */
   .post(ProductController.createProduct); /* POST */
 
-router.route('/catalogo/producto/:id')
+router.route('/catalogo/producto/:barcode')
   .get(ProductController.findProductById) /* GET */
   .put(ProductController.updateProduct) /* PUT */
   .delete(ProductController.deleteProduct); /* DELETE */
