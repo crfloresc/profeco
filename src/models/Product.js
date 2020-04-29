@@ -14,7 +14,8 @@ const productSchema = new mongoose.Schema({
   barcode: {
     type: String,
     maxlength: 25,
-    required: true
+    required: true,
+    unique: true
   },
   name: {
     type: String,
@@ -30,6 +31,12 @@ const productSchema = new mongoose.Schema({
     maxlength: 100
   },
   stock: {
+    type: Number,
+    min: 1,
+    max: 100000,
+    required: true
+  },
+  price: {
     type: Number,
     min: 1,
     max: 100000,
