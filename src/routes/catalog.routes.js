@@ -1,8 +1,9 @@
 const { Router } = require('express');
+const { verifyToken } = require('../middleware/tokens');
 const ProductController = require('../controllers/catalog.controller');
 const router = Router();
 
-router.route('/catalogo/producto') 
+router.route('/catalogo/producto', verifyToken) 
   .get(ProductController.findAllProducts) /* GET ALL */
   .post(ProductController.createProduct); /* POST */
 
