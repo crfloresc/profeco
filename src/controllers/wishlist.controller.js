@@ -1,18 +1,17 @@
-const Product = require('../models/product.model');
-const { info, error } = require('../helpers/logger');
+const Wishlist = require('../models/wishlist.model');
+const { info, error } = require('../helpers/Logger');
 
-// TODO: implement validation, auth req
 /**
- * API: GET Products
+ * API: GET Products on Wishlist
  * 
  * @todo: implement validation, auth req
  */
-const findAllProducts = async (req, res, next) => {
+const findAllProductsOnWishlist = async (req, res, next) => {
   try {
     const auth = true;
 
     if (auth) {
-      await Product.find()
+      await Wishlist.find()
         .then((products) => {
           if (products) {
             return res.json(products)
@@ -30,14 +29,18 @@ const findAllProducts = async (req, res, next) => {
   }
 };
 
-// TODO: implement validation, auth req
-const findProductById = async (req, res, next) => {
+/**
+ * API: GET Product by barcode on Wishlist
+ * 
+ * @todo: implement validation, auth req
+ */
+const findProductByBarcodeOnWishlist = async (req, res, next) => {
   try {
     const { barcode } = req.params;
     const auth = true;
 
     if (auth) {
-      await Product.findOne({
+      await Wishlist.findOne({
         barcode: barcode
       }).then((product) => {
         if (product) {
@@ -61,8 +64,12 @@ const findProductById = async (req, res, next) => {
   }
 };
 
-// TODO: implement validation, auth req
-const createProduct = async (req, res, next) => {
+/**
+ * API: POST Product by barcode on Wishlist
+ * 
+ * @todo: implement validation, auth req
+ */
+const addProductOnWishlist = async (req, res, next) => {
   try {
     const auth = true;
 
@@ -80,7 +87,7 @@ const createProduct = async (req, res, next) => {
   
       let hasProduct = false;
   
-      await Product.findOne({
+      await Wishlist.findOne({
         barcode: req.body.barcode
       }).then((product) => {
         if (product) {
@@ -112,14 +119,18 @@ const createProduct = async (req, res, next) => {
   }
 };
 
-// TODO: implement validation, auth req
-const updateProduct = async (req, res, next) => {
+/**
+ * API: POST Product by barcode on Wishlist
+ * 
+ * @todo: implement validation, auth req
+ */
+const updateProductOnWishlist = async (req, res, next) => {
   try {
     const { barcode } = req.params;
     const auth = true;
 
     if (auth) {
-      await Product.findOneAndUpdate({
+      await Wishlist.findOneAndUpdate({
         barcode: barcode
       }, {
         barcode: req.body.barcode,
@@ -154,14 +165,18 @@ const updateProduct = async (req, res, next) => {
   }
 };
 
-// TODO: implement validation, auth req
-const deleteProduct = async (req, res, next) => {
+/**
+ * API: DELETE Product by barcode on Wishlist
+ * 
+ * @todo: implement validation, auth req
+ */
+const deleteProductOnWishlist = async (req, res, next) => {
   try {
     const { barcode } = req.params;
     const auth = true;
 
     if (auth) {
-      await Product.findOneAndRemove({
+      await Wishlist.findOneAndRemove({
         barcode: barcode
       }).then((product) => {
         if (product) {
@@ -184,14 +199,6 @@ const deleteProduct = async (req, res, next) => {
   }
 };
 
-const verifyItIsJson = (req, res, next) => {
-  if (!req.is('json')) {
-    return res.sendStatus(415);
-  }
-};
-
-// const onToken = (res) => {};
-
 const onError = (res, err) => {
   error('[routes] onError -> ' + err);
   res.json({
@@ -203,9 +210,9 @@ const onError = (res, err) => {
 };
 
 module.exports = {
-  findAllProducts,
-  findProductById,
-  createProduct,
-  updateProduct,
-  deleteProduct
+  findAllProductsOnWishlist,
+  findProductByBarcodeOnWishlist,
+  addProductOnWishlist,
+  updateProductOnWishlist,
+  deleteProductOnWishlist
 };
