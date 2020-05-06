@@ -13,7 +13,8 @@
   "keywords": [
     "api",
     "restful",
-    "json"
+    "json",
+    "rabbitmq"
   ],
   "repository": {
     "type": "git",

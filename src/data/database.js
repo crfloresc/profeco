@@ -1,14 +1,10 @@
 const mongoose = require('mongoose');
-const { info, error } = require('../helpers/Logger');
 
-const optionsdb = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-  useFindAndModify: false
-};
+const config = require('../config/index');
+const { info, error } = require('../helpers/logger');
 
-const uri = process.env.MONGOLAB_URI || 'mongodb://admin:pass1234@ds161890.mlab.com:61890/profeco';
+const uri = config.db.uri;
+const optionsdb = config.db.options;
 
 mongoose.connect(uri, optionsdb);
 

@@ -1,10 +1,27 @@
 module.exports = {
-  port: process.env.PORT,
-  databaseURL: process.env.DATABASE_URI,
+  server: {
+    env: process.env.ENV || 'dev',
+    port: process.env.PORT || 3005,
+    secret: process.env.SECRET || 'eEjmHOg13V2ksbi'
+  },
+  jwt: {
+    jwtSecret: process.env.JWT_SECRET || 'BjfOFS1NUTao2B2'
+  },
+  db: {
+    uri: process.env.DATABASE_URI || 'mongodb://admin:pass1234@ds161890.mlab.com:61890/profeco',
+    options: {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+      useFindAndModify: false
+    }
+  },
   rabbitmq: {
-    apiKey: process.env.RABBITMQ_API_KEY,
-    host: process.env.RABBITMQ_HOST,
-    user: process.env.RABBITMQ_USER,
-    password: process.env.RABBITMQ_PASSWORD
+    apiKey: process.env.RABBITMQ_API_KEY || '',
+    protocol: process.env.RABBITMQ_PROTOCOL || 'amqp',
+    host: process.env.RABBITMQ_HOST || 'localhost',
+    port: process.env.RABBITMQ_PORT || 5672,
+    username: process.env.RABBITMQ_USERNAME || '',
+    password: process.env.RABBITMQ_PASSWORD || ''
   }
 }
