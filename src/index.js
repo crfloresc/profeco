@@ -23,6 +23,7 @@ app.get('/favicon.ico', (req, res) => res.status(204));
 app.use('/api/v1', require('./routes/auth.routes'));
 app.use('/api/v1', require('./routes/catalog.routes'));
 app.use('/api/v1', require('./routes/review.routes'));
+app.use(express.static('smartedu'))
 
 // Run
 app.listen(app.get('port'), () => {
