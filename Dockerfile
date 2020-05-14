@@ -2,6 +2,9 @@
 # docker run [-it or -d (for deamon)] [optional:-p port] [name]
 # docker ps (if you choose -d, for see all docker image)
 # docker run -it -v $(pwd)/app [name]
+
+# docker run --name rabbitmq -p 5672:5672 rabbitmq
+
 FROM node:12-slim
 
 WORKDIR /app
