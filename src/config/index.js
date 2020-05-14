@@ -17,11 +17,11 @@ module.exports = {
     }
   },
   rabbitmq: {
-    apiKey: process.env.RABBITMQ_API_KEY || '',
+    // apiKey: process.env.RABBITMQ_API_KEY || '',
     protocol: process.env.RABBITMQ_PROTOCOL || 'amqp',
-    host: process.env.RABBITMQ_HOST || 'localhost',
+    hostname: process.env.RABBITMQ_HOST || 'localhost',
     port: process.env.RABBITMQ_PORT || 5672,
-    username: process.env.RABBITMQ_USERNAME || '',
-    password: process.env.RABBITMQ_PASSWORD || ''
+    username: process.env.RABBITMQ_USERNAME || 'profeco',
+    password: process.env.RABBITMQ_PASSWORD || 'admin123456'
   }
 }
