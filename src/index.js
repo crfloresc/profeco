@@ -3,7 +3,9 @@ const express = require('express');
 const morgan = require('morgan');
 const passport = require('passport');
 
+require('./middleware/broker.amqp');
 const config = require('./config/index');
+const { profiler } = require('./middleware/profiler');
 const { info, error } = require('./helpers/logger');
 
 // Settings
@@ -16,9 +18,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(morgan('dev'));
 app.use(cors());
 app.use(passport.initialize());
+app.use(profiler);
 
-// Routes
-// - Prevent GET /favicon.ico
+/**
+ * Routes
+ * - Use to prevent GET /favicon.ico
+ * - Use auth route API
+ * - Use catalog route API
+ * - Use review route API
+ */
 app.get('/favicon.ico', (req, res) => res.status(204));
 app.use('/api/v1', require('./routes/auth.routes'));
 app.use('/api/v1', require('./routes/catalog.routes'));

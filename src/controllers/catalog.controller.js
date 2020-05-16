@@ -1,16 +1,17 @@
 const Product = require('../models/product.model');
-const { info, error } = require('../helpers/logger');
+const { test } = require('../middleware/broker.amqp');
+const { error } = require('../helpers/logger');
 
-// TODO: implement validation, auth req
 /**
  * API: GET Products
  * 
  * @todo: implement validation, auth req
  */
 const findAllProducts = async (req, res, next) => {
-  try {
-    const auth = true;
+  const auth = true;
+  test(auth);
 
+  try {
     if (auth) {
       await Product.find()
         .then((products) => {

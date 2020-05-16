@@ -10,6 +10,7 @@ const config = require('../config/index');
 
 // https://dev.to/dipakkr/implementing-authentication-in-nodejs-with-express-and-jwt-codelab-1-j5i
 // https://techbrij.com/token-authentication-nodejs-express-mongo-passport
+// Math.round(Date.now() / 1000) + (10 * 60)
 
 const opts = {
   // fromAuthHeaderAsBearerToken
