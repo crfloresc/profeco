@@ -1,10 +1,20 @@
+# https://github.com/linhbkhn95/express-gateway-example
+# https://github.com/JeniTurtle/express-gateway
+# https://hackernoon.com/authentication-middleware-in-express-gateway-using-jwt-km40360p
 http:
   port: 8080
+#https:
+#  port: 8443
+#  tls:
+#    default:
+#        key: /usr/local/share/ca-certificates/ssl.key
+#        cert: /usr/local/share/ca-certificates/ssl.crt
 apiEndpoints:
   api:
     host: localhost
     paths: '/ip'
   catalog:
+    # methods: 'GET,POST,PUT'
     host: localhost
     paths: [
       '/api/v1/profeco/catalogo/producto',
