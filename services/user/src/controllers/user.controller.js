@@ -6,12 +6,12 @@ const findAllUsers = async (req, res, next) => {
   try {
     await User.find()
       .exec()
-      .then((products) => {
-        if (products) {
-          return res.json(products)
-            .status(200);
+      .then((users) => {
+        if (!users) {
+          return res.sendStatus(404);
         }
-        res.sendStatus(404);
+        res.json(users)
+          .status(200);
       }).catch((err) => {
         throw err;
       });

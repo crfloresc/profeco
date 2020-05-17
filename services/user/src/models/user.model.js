@@ -1,7 +1,13 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt-nodejs');
+const bcrypt = require('bcrypt');
 
-const UserSchema = new mongoose.Schema({
+/**
+ * name
+ * address
+ * tel
+ * cel
+ */
+const userSchema = new mongoose.Schema({
   email: {
     type: String,
     maxlength: 100,
@@ -9,24 +15,35 @@ const UserSchema = new mongoose.Schema({
     dropDups: true,
     required: true
   },
-  rol: {
-    type: String,
-    maxlength: 100,
-    required: true
-  },
   password: {
     type: String,
     maxlength: 100, // Hash pass === 60 len
+    required: true
+  },
+  role: {
+    type: String,
+    maxlength: 100,
+    enum: [
+      'CONSUMIDOR',
+      'MERCADO',
+      'ADMIN'
+    ],
+    default: 'CONSUMIDOR',
+    required: true
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
     required: true
   }
 });
 
 /**
- * UserSchema pre save
+ * userSchema pre save
  * 
  * @todo: () => {} is not a object
  */
-UserSchema.pre('save', function (next) {
+userSchema.pre('save', function (next) {
   let user = this;
 
   if (this.isModified('password') || this.isNew) {
@@ -34,28 +51,31 @@ UserSchema.pre('save', function (next) {
       if (err) {
         return next(err);
       }
-      bcrypt.hash(user.password, salt, null, (err, hash) => {
-        if (err) {
-          return next(err);
-        }
-        user.password = hash;
-        next();
-      });
+
+      bcrypt.hash(user.password, salt)
+        .then((hash) => {
+          user.password = hash;
+          next();
+        })
+        .catch((err) => {
+          next(err);
+        });
     });
   } else {
-    return next();
+    next();
   }
 });
 
-UserSchema.methods.comparePassword = function (passw, cb) {
-  bcrypt.compare(passw, this.password, (err, isMatch) => {
-    if (err) {
-      return cb(err);
-    }
-    cb(null, isMatch);
-  });
+userSchema.methods.comparePassword = function (plainPassword, cb) {
+  bcrypt.compare(plainPassword, this.password)
+    .then((isMatch) => {
+      cb(null, isMatch);
+    })
+    .catch((err) => {
+      cb(err);
+    });
 };
 
-const user = mongoose.model('users', UserSchema);
+const user = mongoose.model('users', userSchema);
 
 module.exports = user;
