@@ -1,2 +1,2 @@
-# profeco
+# Profeco
 Microservices with RabbitMQ

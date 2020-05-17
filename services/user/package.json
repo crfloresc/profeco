@@ -1,8 +1,11 @@
 {
-  "name": "catalog",
+  "name": "example-rabbitmq",
   "version": "1.0.0",
-  "description": "NA",
+  "description": "Microservices with RabbitMQ",
   "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon --exec npm start"
@@ -15,14 +18,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/crfloresc/profeco.git"
+    "url": "git+https://github.com/crfloresc/example-rabbitmq.git"
   },
   "author": "ITSON",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/crfloresc/profeco/issues"
+    "url": "https://github.com/crfloresc/example-rabbitmq/issues"
   },
-  "homepage": "https://github.com/crfloresc/profeco#readme",
+  "homepage": "https://github.com/crfloresc/example-rabbitmq#readme",
   "dependencies": {
     "amqplib": "^0.5.5",
     "bcrypt-nodejs": "0.0.3",
@@ -31,6 +34,8 @@
     "helmet": "^3.22.0",
     "http-status": "^1.4.2",
     "jsonwebtoken": "^8.5.1",
+    "loader": "^2.1.1",
+    "loader.js": "^4.7.0",
     "mongoose": "^5.9.12",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
