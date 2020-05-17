@@ -1,2 +1,2 @@
-# profeco
+# example-rabbitmq
 Microservices with RabbitMQ

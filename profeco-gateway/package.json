@@ -1,0 +1,10 @@
+{
+  "name": "profeco-gateway",
+  "description": "NA",
+  "license": "MIT",
+  "version": "1.0.0",
+  "main": "server.js",
+  "dependencies": {
+    "express-gateway": "^1.16.10"
+  }
+}

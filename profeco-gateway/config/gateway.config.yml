@@ -1,0 +1,62 @@
+http:
+  port: 8080
+apiEndpoints:
+  api:
+    host: localhost
+    paths: '/ip'
+  catalog:
+    host: localhost
+    paths: [
+      '/api/v1/profeco/catalogo/producto',
+      '/api/v1/profeco/catalogo/producto/:barcode'
+    ]
+  review:
+    host: localhost
+    paths: [
+      '/api/v1/profeco/review',
+      '/api/v1/profeco/review/:id',
+      '/api/v1/profeco/review/:user',
+      '/api/v1/profeco/review/:product'
+    ]
+  wishlist:
+    host: localhost
+    paths: [
+      '/api/v1/profeco/wishlist',
+      '/api/v1/profeco/wishlist/:id',
+      '/api/v1/profeco/wishlist/:user'
+    ]
+serviceEndpoints:
+  httpbin:
+    url: 'https://httpbin.org'
+  catalogService:
+    url: 'http://localhost:3005/'
+  reviewService:
+    url: 'http://localhost:3010/'
+policies:
+  - basic-auth
+  - cors
+  - expression
+  - key-auth
+  - log
+  - oauth2
+  - proxy
+  - rate-limit
+pipelines:
+  default:
+    apiEndpoints:
+      - api
+    policies:
+    # - key-auth:
+      - proxy:
+          - action:
+              serviceEndpoint: httpbin 
+              changeOrigin: true
+  catalogPipeline:
+    apiEndpoints:
+      - catalog
+    policies:
+    # - key-auth:
+      - proxy:
+          - action:
+              serviceEndpoint: catalogService
+              changeOrigin: true

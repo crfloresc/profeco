@@ -1,0 +1,33 @@
+{
+  "name": "client",
+  "version": "1.0.0",
+  "description": "Client profeco",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon --exec npm start"
+  },
+  "keywords": [
+    "client",
+    "php"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crfloresc/profeco.git"
+  },
+  "author": "ITSON",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/crfloresc/profeco/issues"
+  },
+  "homepage": "https://github.com/crfloresc/profeco#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "loader": "^2.1.1",
+    "loader.js": "^4.7.0"
+  },
+  "devDependencies": {
+    "chalk": "^4.0.0",
+    "nodemon": "^2.0.3"
+  }
+}
