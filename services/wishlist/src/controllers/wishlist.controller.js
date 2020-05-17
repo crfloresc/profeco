@@ -1,5 +1,5 @@
 const Wishlist = require('../models/wishlist.model');
-const { info, error } = require('../helpers/Logger');
+const { info, error } = require('../helpers/logger');
 
 /**
  * API: GET Products on Wishlist
