@@ -32,14 +32,43 @@ const findAllProducts = async (req, res, next) => {
   }
 };
 
+const findProductsByUser = async (req, res, next) => {
+  const { idUser } = req.params;
+  const auth = idUser;
+
+  try {
+    if (auth) {
+      await Product.find({
+        idUser: idUser
+      }).then((products) => {
+        if (!products) {
+          res.statusCode = 404;
+          return next();
+        }
+        res.result = products;
+        next();
+      }).catch((err) => {
+        throw err;
+      });
+    } else {
+      res.statusCode = 401;
+      next();
+    }
+  } catch (err) {
+    res.error = err;
+    next();
+  }
+};
+
 const findProductById = async (req, res, next) => {
   try {
-    const { _id } = req.params;
-    const auth = true;
+    const { idUser } = req.params;
+    
+    const auth = idUser;
 
     if (auth) {
       await Product.findOne({
-        _id: _id
+        _id: idUser
       }).then((product) => {
         if (!product) {
           res.statusCode = 404;
@@ -63,7 +92,8 @@ const findProductById = async (req, res, next) => {
 const findProductByBarcode = async (req, res, next) => {
   try {
     const { barcode } = req.params;
-    const auth = true;
+    const { idUser } = req.body;
+    const auth = idUser;
 
     if (auth) {
       await Product.findOne({
@@ -93,12 +123,12 @@ const createProduct = async (req, res, next) => {
     barcode, name,
     description, img,
     stock, price,
-    supplier, available
+    supplier, available,
+    idUser
   } = req.body;
+  const auth = idUser;
 
   try {
-    const auth = true;
-
     if (auth) {
       const product = new Product({
         barcode: barcode,
@@ -109,7 +139,7 @@ const createProduct = async (req, res, next) => {
         price: price,
         supplier: supplier,
         available: available,
-        idUser: auth
+        idUser: idUser
       });
   
       await product.save()
@@ -134,9 +164,10 @@ const updateProduct = async (req, res, next) => {
     barcode, name,
     description, img,
     stock, price,
-    supplier, available
+    supplier, available,
+    idUser
   } = req.body;
-  const auth = true;
+  const auth = idUser;
 
   try {
     if (auth) {
@@ -151,7 +182,7 @@ const updateProduct = async (req, res, next) => {
         price: price,
         supplier: supplier,
         available: available,
-        idUser: auth
+        idUser: idUser
       }, {
         new: true
       }).then((product) => {
@@ -176,7 +207,8 @@ const updateProduct = async (req, res, next) => {
 
 const deleteProduct = async (req, res, next) => {
   const { barcode } = req.params;
-  const auth = true;
+  const { idUser } = req.body;
+  const auth = idUser;
 
   try {
     if (auth) {
@@ -210,6 +242,7 @@ const verifyItIsJson = (req, res, next) => {
 
 module.exports = {
   findAllProducts,
+  findProductsByUser,
   findProductById,
   findProductByBarcode,
   createProduct,

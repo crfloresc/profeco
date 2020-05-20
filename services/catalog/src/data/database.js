@@ -1,4 +1,4 @@
-const mongoose = require('../data/database');
+const mongoose = require('mongoose');
 
 const config = require('../config/index');
 const { info, error } = require('../helpers/logger');

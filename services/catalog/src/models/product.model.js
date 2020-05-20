@@ -26,12 +26,12 @@ const productSchema = new mongoose.Schema({
   description: {
     type: String,
     maxlength: 255,
-    defautl: NA
+    defautl: 'NA'
   },
   img: {
     type: String,
     maxlength: 100,
-    defautl: NA
+    defautl: 'NA'
   },
   stock: {
     type: Number,
@@ -48,7 +48,7 @@ const productSchema = new mongoose.Schema({
   supplier: {
     type: String,
     maxlength: 100,
-    defautl: NA
+    defautl: 'NA'
   },
   available: {
     type: Boolean,
