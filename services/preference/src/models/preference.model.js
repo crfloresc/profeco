@@ -14,9 +14,6 @@ const preferenceSchema = new mongoose.Schema({
   favSupermarket: [{
     type: String
   }],
-  unknown: [{
-    type: String
-  }],
   idUser: {
     type: String,
     required: true
