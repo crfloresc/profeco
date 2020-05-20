@@ -5,39 +5,39 @@ const passport = require('passport');
 
 require('./middleware/broker.amqp');
 const config = require('./config/index');
-const { profiler } = require('./middleware/profiler');
+// const { configJwtStrategy } = require('./middleware/cfpassport');
 const { info, error } = require('./helpers/logger');
+const { onSuccessEmptiness, onSuccess, onError } = require('./helpers/response');
 
 // Settings
 const app = express();
 app.set('port', config.server.port);
 
 // Middlewares
+// passport.use(configJwtStrategy);
 app.use(express.json(/*{ limit: '300kb' }*/));
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan('dev'));
 app.use(cors());
 app.use(passport.initialize());
-app.use(profiler);
 
 /**
  * Routes
  * - Use to prevent GET /favicon.ico
- * - Use auth route API
  * - Use catalog route API
- * - Use review route API
+ * - Use to catch res
  */
 app.get('/favicon.ico', (req, res) => res.status(204));
-app.use('/api/v1', require('./routes/auth.routes'));
 app.use('/api/v1', require('./routes/catalog.routes'));
-app.use('/api/v1', require('./routes/review.routes'));
-app.use(express.static('smartedu'))
+app.use(onSuccessEmptiness);
+app.use(onSuccess);
+app.use(onError);
 
 // Run
 app.listen(app.get('port'), () => {
-  info('[server] app listening on '+ app.get('port'));
+  info('[server] app service catalog listening on '+ app.get('port'));
 }).on('close', () => {
-  info('[server] app stopped');
+  info('[server] app service catalog stopped');
 }).on('error', (err) => {
-  error('[server] app error ' + err.message)
+  error('[server] app service catalog error ' + err.message)
 });

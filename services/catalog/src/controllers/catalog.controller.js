@@ -1,38 +1,66 @@
 const Product = require('../models/product.model');
-const { test } = require('../middleware/broker.amqp');
 const { error } = require('../helpers/logger');
 
 /**
  * API: GET Products
  * 
- * @todo: implement validation, auth req
+ * @todo: implement validation on catch error
  */
 const findAllProducts = async (req, res, next) => {
   const auth = true;
-  test(auth);
 
   try {
     if (auth) {
       await Product.find()
         .then((products) => {
-          if (products) {
-            return res.json(products)
-              .status(200);
+          if (!products) {
+            res.statusCode = 404;
+            return next();
           }
-          res.sendStatus(404);
+          res.result = products;
+          next();
         }).catch((err) => {
           throw err;
         });
     } else {
-      res.sendStatus(401);
+      res.statusCode = 401;
+      next();
     }
   } catch (err) {
-    onError(res, err);
+    res.error = err;
+    next();
   }
 };
 
-// TODO: implement validation, auth req
 const findProductById = async (req, res, next) => {
+  try {
+    const { _id } = req.params;
+    const auth = true;
+
+    if (auth) {
+      await Product.findOne({
+        _id: _id
+      }).then((product) => {
+        if (!product) {
+          res.statusCode = 404;
+          return next();
+        }
+        res.result = product;
+        next();
+      }).catch((err) => {
+        throw err;
+      });
+    } else {
+      res.statusCode = 401;
+      next();
+    }
+  } catch (err) {
+    res.error = err;
+    next();
+  }
+};
+
+const findProductByBarcode = async (req, res, next) => {
   try {
     const { barcode } = req.params;
     const auth = true;
@@ -41,147 +69,136 @@ const findProductById = async (req, res, next) => {
       await Product.findOne({
         barcode: barcode
       }).then((product) => {
-        if (product) {
-          return res.json(product)
-            .status(200);
+        if (!product) {
+          res.statusCode = 404;
+          return next();
         }
-        res.sendStatus(404);
+        res.result = product;
+        next();
       }).catch((err) => {
-        if (err.kind === 'ObjectId') {
-          return res.json({
-            message: 'Product not found with barcode: ' + barcode
-          }).status(404);
-        }
         throw err;
       });
     } else {
-      res.sendStatus(401);
+      res.statusCode = 401;
+      next();
     }
   } catch (err) {
-    onError(res, err);
+    res.error = err;
+    next();
   }
 };
 
-// TODO: implement validation, auth req
 const createProduct = async (req, res, next) => {
+  const {
+    barcode, name,
+    description, img,
+    stock, price,
+    supplier, available
+  } = req.body;
+
   try {
     const auth = true;
 
     if (auth) {
       const product = new Product({
-        barcode: req.body.barcode,
-        name: req.body.name,
-        description: req.body.description,
-        img: req.body.img,
-        stock: req.body.stock,
-        price: req.body.price,
-        supplier: req.body.supplier,
-        available: req.body.available
+        barcode: barcode,
+        name: name,
+        description: description,
+        img: img,
+        stock: stock,
+        price: price,
+        supplier: supplier,
+        available: available,
+        idUser: auth
       });
   
-      let hasProduct = false;
-  
-      await Product.findOne({
-        barcode: req.body.barcode
-      }).then((product) => {
-        if (product) {
-          hasProduct = true;
-        }
-      }).catch((err) => {
-        if (err.kind !== 'ObjectId') {
-          hasProduct = true;
+      await product.save()
+        .then((product) => {
+          res.result = product;
+          next();
+        }).catch((err) => {
           throw err;
-        }
-      });
-  
-      if (hasProduct) {
-        res.sendStatus(404);
-      } else {
-        await product.save()
-          .then((data) => {
-            res.json(data)
-              .status(200);
-          }).catch((err) => {
-            throw err;
-          });
-      }
+        });
     } else {
-      res.sendStatus(401);
+      res.statusCode = 401;
+      next();
     }
   } catch (err) {
-    onError(res, err);
+    res.error = err;
+    next();
   }
 };
 
-// TODO: implement validation, auth req
 const updateProduct = async (req, res, next) => {
-  try {
-    const { barcode } = req.params;
-    const auth = true;
+  const {
+    barcode, name,
+    description, img,
+    stock, price,
+    supplier, available
+  } = req.body;
+  const auth = true;
 
+  try {
     if (auth) {
       await Product.findOneAndUpdate({
         barcode: barcode
       }, {
-        barcode: req.body.barcode,
-        name: req.body.name,
-        description: req.body.description,
-        img: req.body.img,
-        stock: req.body.stock,
-        price: req.body.price,
-        supplier: req.body.supplier,
-        available: req.body.available
+        barcode: barcode,
+        name: name,
+        description: description,
+        img: img,
+        stock: stock,
+        price: price,
+        supplier: supplier,
+        available: available,
+        idUser: auth
       }, {
         new: true
       }).then((product) => {
-        if (product) {
-          return res.json(product)
-            .status(200);
+        if (!product) {
+          res.statusCode = 404;
+          return next();
         }
-        res.sendStatus(404);
+        res.result = product;
+        next();
       }).catch((err) => {
-        if (err.kind === 'ObjectId') {
-          return res.json({
-            message: 'Product not found with barcode: ' + barcode
-          }).status(404);                
-        }
         throw err;
       });
     } else {
-      res.sendStatus(401);
+      res.statusCode = 401;
+      next();
     }
   } catch (err) {
-    onError(res, err);
+    res.error = err;
+    next();
   }
 };
 
-// TODO: implement validation, auth req
 const deleteProduct = async (req, res, next) => {
-  try {
-    const { barcode } = req.params;
-    const auth = true;
+  const { barcode } = req.params;
+  const auth = true;
 
+  try {
     if (auth) {
       await Product.findOneAndRemove({
         barcode: barcode
       }).then((product) => {
-        if (product) {
-          return res.sendStatus(204);
+        if (!product) {
+          res.statusCode = 404;
+          return next();
         }
-        res.sendStatus(404);
+        res.statusCode = 204;
+        next();
       }).catch((err) => {
-        if (err.kind === 'ObjectId' || err.name === 'NotFound') {
-          return res.json({
-              message: 'Product not found with barcode: ' + barcode
-          }).status(404);
-        }
         throw err;
       });
     } else {
-      res.sendStatus(401);
+      res.statusCode = 404;
+      next();
     }
   } catch (err) {
-    onError(res, err);
+    res.error = err;
+    next();
   }
 };
 
@@ -191,21 +208,10 @@ const verifyItIsJson = (req, res, next) => {
   }
 };
 
-// const onToken = (res) => {};
-
-const onError = (res, err) => {
-  error('[routes] onError -> ' + err);
-  res.json({
-    'errors': {
-      name: err.name,
-      message: err.message
-    }
-  }).status(err.status || 500);
-};
-
 module.exports = {
   findAllProducts,
   findProductById,
+  findProductByBarcode,
   createProduct,
   updateProduct,
   deleteProduct

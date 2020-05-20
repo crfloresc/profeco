@@ -9,6 +9,7 @@ const mongoose = require('../data/database');
  * - stock: NA
  * - supplier: NA
  * - available: NA
+ * - idUser: NA
  */
 const productSchema = new mongoose.Schema({
   barcode: {
@@ -24,11 +25,13 @@ const productSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    maxlength: 255
+    maxlength: 255,
+    defautl: NA
   },
   img: {
     type: String,
-    maxlength: 100
+    maxlength: 100,
+    defautl: NA
   },
   stock: {
     type: Number,
@@ -44,10 +47,16 @@ const productSchema = new mongoose.Schema({
   },
   supplier: {
     type: String,
-    maxlength: 100
+    maxlength: 100,
+    defautl: NA
   },
   available: {
     type: Boolean,
+    defautl: true
+  },
+  idUser: {
+    type: String,
+    maxlength: 100,
     required: true
   }
 }, {
