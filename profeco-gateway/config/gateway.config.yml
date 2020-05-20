@@ -1,14 +1,11 @@
-# https://github.com/linhbkhn95/express-gateway-example
-# https://github.com/JeniTurtle/express-gateway
-# https://hackernoon.com/authentication-middleware-in-express-gateway-using-jwt-km40360p
 http:
   port: 8080
-#https:
-#  port: 8443
-#  tls:
-#    default:
-#        key: /usr/local/share/ca-certificates/ssl.key
-#        cert: /usr/local/share/ca-certificates/ssl.crt
+https:
+  port: 8443
+  tls:
+    'default':
+        key: config/ssl/example.key
+        cert: config/ssl/example.crt
 apiEndpoints:
   api:
     host: localhost
