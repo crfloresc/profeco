@@ -3,7 +3,7 @@ Microservices with RabbitMQ
 
 ## Setup
 
-You can run the code by installing dependencies with
+You can run the services by installing dependencies with
 
 ``` bash
 npm i
