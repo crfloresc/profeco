@@ -1,218 +1,161 @@
 const Wishlist = require('../models/wishlist.model');
 const { info, error } = require('../helpers/logger');
 
-/**
- * API: GET Products on Wishlist
- * 
- * @todo: implement validation, auth req
- */
-const findAllProductsOnWishlist = async (req, res, next) => {
-  try {
-    const auth = true;
+const findAllWishlist = async (req, res, next) => {
+  const auth = true;
 
+  try {
     if (auth) {
       await Wishlist.find()
-        .then((products) => {
-          if (products) {
-            return res.json(products)
-              .status(200);
+        .then((wishlists) => {
+          if (!wishlists) {
+            res.statusCode = 404;
+            return next();
           }
-          res.sendStatus(404);
+          res.result = wishlists;
+          next();
         }).catch((err) => {
           throw err;
         });
     } else {
-      res.sendStatus(401);
+      res.statusCode = 401;
+      next();
     }
   } catch (err) {
-    onError(res, err);
+    res.error = err;
+    next();
   }
 };
 
-/**
- * API: GET Product by barcode on Wishlist
- * 
- * @todo: implement validation, auth req
- */
-const findProductByBarcodeOnWishlist = async (req, res, next) => {
-  try {
-    const { barcode } = req.params;
-    const auth = true;
+const findAllWishlistByUser = async (req, res, next) => {
+  const { idUser } = req.params;
+  const auth = idUser;
 
+  try {
     if (auth) {
-      await Wishlist.findOne({
-        barcode: barcode
-      }).then((product) => {
-        if (product) {
-          return res.json(product)
-            .status(200);
+      await Wishlist.find({
+        idUser: idUser
+      }).then((wishlists) => {
+        if (!wishlists) {
+          res.statusCode = 404;
+          return next();
         }
-        res.sendStatus(404);
+        res.result = wishlists;
+        next();
       }).catch((err) => {
-        if (err.kind === 'ObjectId') {
-          return res.json({
-            message: 'Product not found with barcode: ' + barcode
-          }).status(404);
-        }
         throw err;
       });
     } else {
-      res.sendStatus(401);
+      res.statusCode = 401;
+      next();
     }
   } catch (err) {
-    onError(res, err);
+    res.error = err;
+    next();
   }
 };
 
-/**
- * API: POST Product by barcode on Wishlist
- * 
- * @todo: implement validation, auth req
- */
-const addProductOnWishlist = async (req, res, next) => {
-  try {
-    const auth = true;
+const createWishlist = async (req, res, next) => {
+  const {
+    name,
+    idUser
+  } = req.body;
+  const auth = true;
 
+  try {
     if (auth) {
-      const product = new Product({
-        barcode: req.body.barcode,
-        name: req.body.name,
-        description: req.body.description,
-        img: req.body.img,
-        stock: req.body.stock,
-        price: req.body.price,
-        supplier: req.body.supplier,
-        available: req.body.available
+      const wishlist = new Wishlist({
+        name: name,
+        idUser: idUser
       });
   
-      let hasProduct = false;
-  
-      await Wishlist.findOne({
-        barcode: req.body.barcode
-      }).then((product) => {
-        if (product) {
-          hasProduct = true;
-        }
-      }).catch((err) => {
-        if (err.kind !== 'ObjectId') {
-          hasProduct = true;
+      await wishlist.save()
+        .then((wishlist) => {
+          res.result = wishlist;
+          next();
+        }).catch((err) => {
           throw err;
-        }
-      });
-  
-      if (hasProduct) {
-        res.sendStatus(404);
-      } else {
-        await product.save()
-          .then((data) => {
-            res.json(data)
-              .status(200);
-          }).catch((err) => {
-            throw err;
-          });
-      }
+        });
     } else {
-      res.sendStatus(401);
+      res.statusCode = 401;
+      next();
     }
   } catch (err) {
-    onError(res, err);
+    res.error = err;
+    next();
   }
 };
 
-/**
- * API: POST Product by barcode on Wishlist
- * 
- * @todo: implement validation, auth req
- */
-const updateProductOnWishlist = async (req, res, next) => {
-  try {
-    const { barcode } = req.params;
-    const auth = true;
+const updateWishlist = async (req, res, next) => {
+  const {
+    idWishlist,
+    name
+  } = req.body;
+  const auth = true;
 
+  try {
     if (auth) {
       await Wishlist.findOneAndUpdate({
-        barcode: barcode
+        idWishlist: idWishlist
       }, {
-        barcode: req.body.barcode,
-        name: req.body.name,
-        description: req.body.description,
-        img: req.body.img,
-        stock: req.body.stock,
-        price: req.body.price,
-        supplier: req.body.supplier,
-        available: req.body.available
+        name: name,
+        $push: {
+          products: idProduct
+        }
       }, {
         new: true
-      }).then((product) => {
-        if (product) {
-          return res.json(product)
-            .status(200);
+      }).then((wishlist) => {
+        if (!wishlist) {
+          res.statusCode = 404;
+          return next();
         }
-        res.sendStatus(404);
+        res.result = wishlist;
+        next();
       }).catch((err) => {
-        if (err.kind === 'ObjectId') {
-          return res.json({
-            message: 'Product not found with barcode: ' + barcode
-          }).status(404);                
-        }
         throw err;
       });
     } else {
-      res.sendStatus(401);
+      res.statusCode = 401;
+      next();
     }
   } catch (err) {
-    onError(res, err);
+    res.error = err;
+    next();
   }
 };
 
-/**
- * API: DELETE Product by barcode on Wishlist
- * 
- * @todo: implement validation, auth req
- */
-const deleteProductOnWishlist = async (req, res, next) => {
-  try {
-    const { barcode } = req.params;
-    const auth = true;
+const deleteWishlist = async (req, res, next) => {
+  const { idWishlist } = req.params;
+  const auth = true;
 
+  try {
     if (auth) {
       await Wishlist.findOneAndRemove({
-        barcode: barcode
-      }).then((product) => {
-        if (product) {
-          return res.sendStatus(204);
+        idWishlist: idWishlist
+      }).then((wishlist) => {
+        if (!wishlist) {
+          res.statusCode = 404;
+          return next();
         }
-        res.sendStatus(404);
+        res.statusCode = 204;
+        next();
       }).catch((err) => {
-        if (err.kind === 'ObjectId' || err.name === 'NotFound') {
-          return res.json({
-              message: 'Product not found with barcode: ' + barcode
-          }).status(404);
-        }
         throw err;
       });
     } else {
-      res.sendStatus(401);
+      res.statusCode = 404;
+      next();
     }
   } catch (err) {
-    onError(res, err);
+    res.error = err;
+    next();
   }
-};
-
-const onError = (res, err) => {
-  error('[routes] onError -> ' + err);
-  res.json({
-    'errors': {
-      name: err.name,
-      message: err.message
-    }
-  }).status(err.status || 500);
 };
 
 module.exports = {
-  findAllProductsOnWishlist,
-  findProductByBarcodeOnWishlist,
-  addProductOnWishlist,
-  updateProductOnWishlist,
-  deleteProductOnWishlist
+  findAllWishlist,
+  findAllWishlistByUser,
+  createWishlist,
+  updateWishlist,
+  deleteWishlist
 };

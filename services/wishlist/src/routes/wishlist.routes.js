@@ -1,15 +1,16 @@
 const { Router } = require('express');
-const { verifyToken } = require('../middleware/tokens');
 const WishlistController = require('../controllers/wishlist.controller');
 const router = Router();
 
-//router.route('/catalogo/producto', verifyToken) 
-//  .get(ProductController.findAllProducts) /* GET ALL */
-//  .post(ProductController.createProduct); /* POST */
+router.route('/usuario/wishlist') 
+  .get(WishlistController.findAllWishlist) /* GET ALL */
+  .post(WishlistController.createWishlist); /* POST */
 
-//router.route('/catalogo/producto/:barcode')
-//  .get(ProductController.findProductById) /* GET */
-//  .put(ProductController.updateProduct) /* PUT */
-//  .delete(ProductController.deleteProduct); /* DELETE */
+router.route('/usuario/wishlist/:idUser') 
+  .get(WishlistController.findAllWishlistByUser) /* GET */
+
+router.route('/usuario/wishlist/:idWishlist')
+  .put(WishlistController.updateWishlist) /* PUT */
+  .delete(WishlistController.deleteWishlist); /* DELETE */
 
 module.exports = router;
