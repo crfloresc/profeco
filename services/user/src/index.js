@@ -5,13 +5,17 @@ const passport = require('passport');
 
 require('./middleware/broker.amqp');
 const config = require('./config/index');
+const { configLocalStrategy, configJwtStrategy } = require('./middleware/cfpassport');
 const { info, error } = require('./helpers/logger');
+const { onSuccessEmptiness, onSuccess, onError } = require('./helpers/response');
 
 // Settings
 const app = express();
 app.set('port', config.server.port);
 
 // Middlewares
+passport.use(configLocalStrategy);
+passport.use(configJwtStrategy);
 app.use(express.json(/*{ limit: '300kb' }*/));
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan('dev'));
@@ -22,9 +26,13 @@ app.use(passport.initialize());
  * Routes
  * - Use to prevent GET /favicon.ico
  * - Use user route API
+ * - Use to catch res
  */
 app.get('/favicon.ico', (req, res) => res.status(204));
 app.use('/api/v1', require('./routes/user.routes'));
+app.use(onSuccessEmptiness);
+app.use(onSuccess);
+app.use(onError);
 
 // Run
 app.listen(app.get('port'), () => {

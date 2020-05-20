@@ -1,13 +1,12 @@
-const mongoose = require('mongoose');
+const mongoose = require('../data/database');
 const bcrypt = require('bcrypt');
 
-/**
- * name
- * address
- * tel
- * cel
- */
 const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    maxlength: 100,
+    required: true
+  },
   email: {
     type: String,
     maxlength: 100,

@@ -1,5 +1,6 @@
+const passport = require('passport');
 const User = require('../models/user.model');
-const { generateToken } = require('../middleware/tokens');
+const { generateToken } = require('../helpers/tokens');
 const { info, error } = require('../helpers/logger');
 
 const findAllUsers = async (req, res, next) => {
@@ -8,65 +9,50 @@ const findAllUsers = async (req, res, next) => {
       .exec()
       .then((users) => {
         if (!users) {
-          return res.sendStatus(404);
+          res.statusCode = 404;
+          return next();
         }
-        res.json(users)
-          .status(200);
+        res.result = users;
+        next();
       }).catch((err) => {
         throw err;
       });
   } catch (err) {
-    onError(res, err);
+    res.error = err;
+    next();
   }
 };
 
 /**
  * API: POST Register new user
  * 
- * @todo: implement next catch
  * @todo: search better implementation on check if exist user
  */
 const register = async (req, res, next) => {
+  const {
+    name, email,
+    role, password
+  } = req.body;
+
   try {
-    const { email, rol, password } = req.body;
+    const user = new User({
+      name: name,
+      email: email,
+      role: role,
+      password: password
+    });
 
-    if (email && rol && password) {
-      const userEmailExists = await User.findOne({
-        email: email
+    await user.save()
+      .then((user) => {
+        res.result = user;
+        next();
+      }).catch((err) => {
+        err.status = 404;
+        throw err;
       });
-
-      if (userEmailExists) {
-        return res.json({
-          success: false,
-          msg: 'Email already exists'
-        }).status(400);
-      }
-
-      const user = new User({
-        email: email,
-        rol: rol,
-        password: password
-      });
-
-      await user.save()
-        .then((data) => {
-          let foo = {
-            success: true,
-            msg: 'Successful created new user'
-          };
-          res.json(data)
-            .status(200);
-        }).catch((err) => {
-          throw err;
-        });
-    } else {
-      res.json({
-        success: false,
-        msg: 'Please pass all info of user'
-      }).status(400);
-    }
   } catch (err) {
-    onError(res, err);
+    res.error = err;
+    next();
   }
 };
 
@@ -74,52 +60,34 @@ const register = async (req, res, next) => {
  * API: GET Log-in user
  * 
  * @todo: implement next catch
+ * @todo: dont send the user, implement on client a decrypt token system
  */
 const login = async (req, res, next) => {
-  const { email, password } = req.body;
-
   try {
-    await User.findOne({
-      email: email
-    }).then((user) => {
-      if (!user) {
-        return res.json({
-          success: false,
-          msg: 'Authentication failed'
-        }).status(401);
+    passport.authenticate('local', {
+      session: false
+    }, (error, user) => {
+      if (error) {
+        res.statusCode = 400;
+        return next();
       }
 
-      user.comparePassword(password, (err, isMatch) => {
-        if (isMatch && !err) {
-          const token = generateToken(res, email);
+      if (!user) {
+        res.statusCode = 404;
+        return next();
+      }
 
-          res.json({
-            success: true,
-            token: 'JWT ' + req.cookies['token']
-          }).status(200);
-        } else {
-          res.json({
-            success: false,
-            msg: 'Authentication failed. Something wrong'
-          }).status(401);
-        }
-      });
-    }).catch((err) => {
-      throw err;
-    });
+      const token = generateToken(user);
+      res.result = {
+        user: user,
+        token: token
+      };
+      next();
+    })(req, res, next);
   } catch (err) {
-    onError(res, err);
+    res.error = err;
+    next();
   }
-};
-
-const onError = (res, err) => {
-  error('[routes] onError -> ' + err);
-  res.json({
-    'errors': {
-      name: err.name,
-      message: err.message
-    }
-  }).status(err.status || 500);
 };
 
 module.exports = {
