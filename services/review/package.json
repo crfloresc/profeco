@@ -1,0 +1,41 @@
+{
+  "name": "review",
+  "version": "1.0.0",
+  "description": "NA",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon --exec npm start"
+  },
+  "keywords": [
+    "microservice",
+    "api",
+    "restful",
+    "json",
+    "rabbitmq"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crfloresc/profeco.git"
+  },
+  "author": "ITSON",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/crfloresc/profeco/issues"
+  },
+  "homepage": "https://github.com/crfloresc/profeco#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "helmet": "^3.22.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.12",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0"
+  },
+  "devDependencies": {
+    "chalk": "^4.0.0",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.3"
+  }
+}
