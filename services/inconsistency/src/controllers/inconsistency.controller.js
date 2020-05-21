@@ -34,7 +34,8 @@ const createInconsistency = async (req, res, next) => {
     idProduct,
     idUser
   } = req.body;
-  const auth = req.body.auth;
+  const auth = req.body.user;
+  console.log(req.body);
 
   try {
     if (auth) {

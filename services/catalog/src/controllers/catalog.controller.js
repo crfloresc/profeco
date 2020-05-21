@@ -123,7 +123,8 @@ const createProduct = async (req, res, next) => {
     stock, price,
     supplier, available
   } = req.body;
-  const auth = req.body.user;
+  const auth = req.body.user.user;
+  const id = auth._id;
 
   try {
     if (auth) {
@@ -136,8 +137,9 @@ const createProduct = async (req, res, next) => {
         price: price,
         supplier: supplier,
         available: available,
-        idUser: auth._id
+        idUser: id
       });
+      console.log(product);
   
       await product.save()
         .then((product) => {
@@ -163,12 +165,14 @@ const updateProduct = async (req, res, next) => {
     stock, price,
     supplier, available
   } = req.body;
-  const auth = req.body.user;
+  const auth = req.body.user.user;
+  const id = auth._id;
 
   try {
     if (auth) {
+      const actual = req.params.barcode;
       await Product.findOneAndUpdate({
-        barcode: barcode
+        barcode: actual
       }, {
         barcode: barcode,
         name: name,
@@ -178,7 +182,7 @@ const updateProduct = async (req, res, next) => {
         price: price,
         supplier: supplier,
         available: available,
-        idUser: auth._id
+        idUser: id
       }, {
         new: true
       }).then((product) => {
@@ -203,12 +207,13 @@ const updateProduct = async (req, res, next) => {
 
 const deleteProduct = async (req, res, next) => {
   const { barcode } = req.params;
-  const auth = req.body.user;
+  const auth = req.body.user.user;
 
   try {
     if (auth) {
+      const actual = req.params.barcode;
       await Product.findOneAndRemove({
-        barcode: barcode
+        barcode: actual
       }).then((product) => {
         if (!product) {
           res.statusCode = 404;

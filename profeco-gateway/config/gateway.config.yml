@@ -103,7 +103,15 @@ pipelines:
     apiEndpoints:
       - inconsistency
     policies:
-    # - key-auth:
+      - jwt:
+          - action:
+              secretOrPublicKey: 'BjfOFS1NUTao2B2'
+              checkCredentialExistence: false
+      - request-transformer:
+          - action:
+              body:
+                add:
+                  user: req.user
       - proxy:
           - action:
               serviceEndpoint: inconsistencyService
