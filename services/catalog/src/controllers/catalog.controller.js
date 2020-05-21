@@ -7,7 +7,7 @@ const { error } = require('../helpers/logger');
  * @todo: implement validation on catch error
  */
 const findAllProducts = async (req, res, next) => {
-  const auth = true;
+  const auth = req.body.user;
 
   try {
     if (auth) {
@@ -34,7 +34,7 @@ const findAllProducts = async (req, res, next) => {
 
 const findProductsByUser = async (req, res, next) => {
   const { idUser } = req.params;
-  const auth = idUser;
+  const auth = req.body.user;
 
   try {
     if (auth) {
@@ -62,13 +62,12 @@ const findProductsByUser = async (req, res, next) => {
 
 const findProductById = async (req, res, next) => {
   try {
-    const { idUser } = req.params;
-    
-    const auth = idUser;
+    const { idProduct } = req.params;
+    const auth = req.body.user;
 
     if (auth) {
       await Product.findOne({
-        _id: idUser
+        _id: idProduct
       }).then((product) => {
         if (!product) {
           res.statusCode = 404;
@@ -92,8 +91,7 @@ const findProductById = async (req, res, next) => {
 const findProductByBarcode = async (req, res, next) => {
   try {
     const { barcode } = req.params;
-    const { idUser } = req.body;
-    const auth = idUser;
+    const auth = req.body.user;
 
     if (auth) {
       await Product.findOne({
@@ -123,10 +121,9 @@ const createProduct = async (req, res, next) => {
     barcode, name,
     description, img,
     stock, price,
-    supplier, available,
-    idUser
+    supplier, available
   } = req.body;
-  const auth = idUser;
+  const auth = req.body.user;
 
   try {
     if (auth) {
@@ -139,7 +136,7 @@ const createProduct = async (req, res, next) => {
         price: price,
         supplier: supplier,
         available: available,
-        idUser: idUser
+        idUser: auth._id
       });
   
       await product.save()
@@ -164,10 +161,9 @@ const updateProduct = async (req, res, next) => {
     barcode, name,
     description, img,
     stock, price,
-    supplier, available,
-    idUser
+    supplier, available
   } = req.body;
-  const auth = idUser;
+  const auth = req.body.user;
 
   try {
     if (auth) {
@@ -182,7 +178,7 @@ const updateProduct = async (req, res, next) => {
         price: price,
         supplier: supplier,
         available: available,
-        idUser: idUser
+        idUser: auth._id
       }, {
         new: true
       }).then((product) => {
@@ -207,8 +203,7 @@ const updateProduct = async (req, res, next) => {
 
 const deleteProduct = async (req, res, next) => {
   const { barcode } = req.params;
-  const { idUser } = req.body;
-  const auth = idUser;
+  const auth = req.body.user;
 
   try {
     if (auth) {
@@ -231,12 +226,6 @@ const deleteProduct = async (req, res, next) => {
   } catch (err) {
     res.error = err;
     next();
-  }
-};
-
-const verifyItIsJson = (req, res, next) => {
-  if (!req.is('json')) {
-    return res.sendStatus(415);
   }
 };
 

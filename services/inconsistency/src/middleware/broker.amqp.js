@@ -23,27 +23,10 @@ connection()
  * Connect with rabbitmq
  * @param {*} msg El mensaje
  */
-const routingKey = 'words'; //
-const exchangeName = 'direct'; //
-const qName = 'fine-file'; // Nombre de la cola
-const test = async (msg) => {
-  if (channel != null) {
-    await channel.assertExchange(exchangeName, 'direct', {
-      durable: false
-    });
-
-    await channel.assertQueue(qName, {
-      exclusive: false,
-      durable: true
-    });
-
-    await channel.bindQueue(channel.queue, exchangeName, routingKey);
-
-    attach('[x] attached - msg: ' + msg + ', date: ' + new Date());
-  }
-};
-
-const publish = async (msg, routingKey, exchangeName, qName) => {
+const routingKey = 'words';
+const exchangeName = 'direct';
+const qName = 'fine-file';
+const publish = async (msg) => {
   if (channel != null) {
     await channel.assertExchange(exchangeName, 'direct', {
       durable: false
@@ -65,22 +48,6 @@ const publish = async (msg, routingKey, exchangeName, qName) => {
   }
 };
 
-const consume = (qName) => {
-  return channel.get(qName, {})
-    .then((msgOrFalse) => {
-      return new Promise(resolve => {
-        let result = 'No messages in queue';
-        if (msgOrFalse !== false) {
-          result = msgOrFalse.content.toString();
-          channel.ack(msgOrFalse);
-        }
-        info(result);
-        resolve(result);
-      });
-    });
-};
-
 module.exports = {
-  test,
-  consume
+  publish
 };

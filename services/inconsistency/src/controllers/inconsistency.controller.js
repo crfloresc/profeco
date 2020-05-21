@@ -1,4 +1,5 @@
 const Inconsistency = require('../models/inconsistency.model');
+const { publish } = require('../middleware/broker.amqp');
 const { error } = require('../helpers/logger');
 
 const findAllInconsistencies = async (req, res, next) => {
@@ -33,7 +34,7 @@ const createInconsistency = async (req, res, next) => {
     idProduct,
     idUser
   } = req.body;
-  const auth = true;
+  const auth = req.body.auth;
 
   try {
     if (auth) {
@@ -45,6 +46,7 @@ const createInconsistency = async (req, res, next) => {
   
       await inconsistency.save()
         .then((inconsistency) => {
+          publish(idUser);
           res.result = inconsistency;
           next();
         }).catch((err) => {

@@ -7,63 +7,134 @@ https:
         key: config/ssl/example.key
         cert: config/ssl/example.crt
 apiEndpoints:
-  api:
-    host: localhost
-    paths: '/ip'
   catalog:
-    # methods: 'GET,POST,PUT'
+    methods: 'GET,POST,PUT,DELETE'
     host: localhost
     paths: [
       '/api/v1/profeco/catalogo/producto',
+      '/api/v1/profeco/catalogo/producto/:idUser',
       '/api/v1/profeco/catalogo/producto/:barcode'
     ]
-  review:
+  fine:
+    methods: 'GET,POST'
     host: localhost
     paths: [
-      '/api/v1/profeco/review',
-      '/api/v1/profeco/review/:id',
-      '/api/v1/profeco/review/:user',
-      '/api/v1/profeco/review/:product'
+      '/api/v1/profeco/multas'
+    ]
+  inconsistency:
+    methods: 'GET,POST'
+    host: localhost
+    paths: [
+      '/api/v1/profeco/reportar/inconsistencia'
+    ]
+  review:
+    methods: 'GET,POST,PUT,DELETE'
+    host: localhost
+    paths: [
+      '/api/v1/profeco/review/producto',
+      '/api/v1/profeco/review/producto/:idUser',
+      '/api/v1/profeco/review/producto/:idProduct'
+    ]
+  user:
+    methods: 'GET,POST'
+    host: localhost
+    paths: [
+      '/api/v1/profeco/users',
+      '/api/v1/profeco/register',
+      '/api/v1/profeco/login'
     ]
   wishlist:
+    methods: 'GET,POST,PUT,DELETE'
     host: localhost
     paths: [
-      '/api/v1/profeco/wishlist',
-      '/api/v1/profeco/wishlist/:id',
-      '/api/v1/profeco/wishlist/:user'
+      '/api/v1/profeco/usuario/wishlist',
+      '/api/v1/profeco/usuario/wishlist/:idUser',
+      '/api/v1/profeco/usuario/wishlist/:idWishlist'
     ]
 serviceEndpoints:
-  httpbin:
-    url: 'https://httpbin.org'
   catalogService:
     url: 'http://localhost:3005/'
+  fineService:
+    url: 'http://localhost:3030/'
+  inconsistencyService:
+    url: 'http://localhost:3025/'
   reviewService:
+    url: 'http://localhost:3020/'
+  userService:
+    url: 'http://localhost:3015/'
+  wishlistService:
     url: 'http://localhost:3010/'
 policies:
-  - basic-auth
   - cors
   - expression
-  - key-auth
   - log
-  - oauth2
   - proxy
+  - jwt
   - rate-limit
+  - request-transformer
 pipelines:
-  default:
-    apiEndpoints:
-      - api
-    policies:
-    # - key-auth:
-      - proxy:
-          - action:
-              serviceEndpoint: httpbin 
-              changeOrigin: true
   catalogPipeline:
     apiEndpoints:
       - catalog
     policies:
-    # - key-auth:
+      - jwt:
+          - action:
+              secretOrPublicKey: 'BjfOFS1NUTao2B2'
+              checkCredentialExistence: false
+      - request-transformer:
+          - action:
+              body:
+                add:
+                  user: req.user
       - proxy:
           - action:
               serviceEndpoint: catalogService
+              changeOrigin: true
+  finePipeline:
+    apiEndpoints:
+      - fine
+    policies:
+    # - key-auth:
+      - proxy:
+          - action:
+              serviceEndpoint: fineService
+              changeOrigin: true
+  inconsistencyPipeline:
+    apiEndpoints:
+      - inconsistency
+    policies:
+    # - key-auth:
+      - proxy:
+          - action:
+              serviceEndpoint: inconsistencyService
+              changeOrigin: true
+  reviewPipeline:
+    apiEndpoints:
+      - review
+    policies:
+    # - key-auth:
+      - proxy:
+          - action:
+              serviceEndpoint: reviewService
+              changeOrigin: true
+  userPipeline:
+    apiEndpoints:
+      - user
+    policies:
+    # - key-auth:
+      - log:
+          - action:
+              message: 'auth ${req.method}'
+      - proxy:
+          - action:
+              serviceEndpoint: userService
+              changeOrigin: true
+  wishlistPipeline:
+    apiEndpoints:
+      - wishlist
+    policies:
+    # - key-auth:
+      - proxy:
+          - action:
+              serviceEndpoint: wishlistService
               changeOrigin: true

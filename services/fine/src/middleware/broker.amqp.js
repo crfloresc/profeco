@@ -43,44 +43,18 @@ const test = async (msg) => {
   }
 };
 
-const publish = async (msg, routingKey, exchangeName, qName) => {
-  if (channel != null) {
-    await channel.assertExchange(exchangeName, 'direct', {
-      durable: false
-    });
-
-    await channel.assertQueue(qName, {
-      exclusive: false,
-      durable: true
-    });
-
-    await channel.bindQueue(channel.queue, exchangeName, routingKey);
-
-    channel.publish(
-      exchangeName,
-      routingKey,
-      Buffer.from(msg)
-    );
-    attach('[x] on addMessage - msg: ' + msg + ', date: ' + new Date());
-  }
-};
-
-const consume = (qName) => {
-  return channel.get(qName, {})
+const consume = async (qName) => {
+if (channel != null) {
+  return await channel.get(qName, {})
     .then((msgOrFalse) => {
-      return new Promise(resolve => {
         let result = 'No messages in queue';
         if (msgOrFalse !== false) {
           result = msgOrFalse.content.toString();
           channel.ack(msgOrFalse);
         }
         info(result);
-        resolve(result);
-      });
     });
+}
 };
+console.log(consume(qName));
 
-module.exports = {
-  test,
-  consume
-};

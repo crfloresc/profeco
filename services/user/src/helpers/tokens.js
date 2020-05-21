@@ -13,6 +13,7 @@ const generateToken = (user) => {
     sub: user._id,
     //iat: Date.now(),
     //exp: expiration,
+    user: user,
     email: user.email,
     role: user.role
   }, config.jwt.jwtSecret, {

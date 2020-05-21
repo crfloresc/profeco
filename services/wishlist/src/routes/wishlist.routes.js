@@ -2,14 +2,14 @@ const { Router } = require('express');
 const WishlistController = require('../controllers/wishlist.controller');
 const router = Router();
 
-router.route('/usuario/wishlist') 
+router.route('/profeco/usuario/wishlist') 
   .get(WishlistController.findAllWishlist) /* GET ALL */
   .post(WishlistController.createWishlist); /* POST */
 
-router.route('/usuario/wishlist/:idUser') 
+router.route('/profeco/usuario/wishlist/:idUser') 
   .get(WishlistController.findAllWishlistByUser) /* GET */
 
-router.route('/usuario/wishlist/:idWishlist')
+router.route('/profeco/usuario/wishlist/:idWishlist')
   .put(WishlistController.updateWishlist) /* PUT */
   .delete(WishlistController.deleteWishlist); /* DELETE */
 
